@@ -16,6 +16,7 @@ function DataSource(opts, callback) {
   this.conf = merge({
     mongodbURI: mongodbURI
   }, opts);
+  this.db = null;
   this.open(callback);
 }
 
@@ -39,7 +40,7 @@ DataSource.prototype.open = function (callback) {
 };
 
 DataSource.prototype.close = function () {
-  if (null != this.db) {
+  if (null !== this.db) {
     this.db.close();
     this.db = null;
   }
@@ -50,20 +51,20 @@ function Model(dataSource, collectionName) {
     dataSource: dataSource,
     colName: collectionName
   };
-};
+}
 
 Model.prototype.has = function (qry, callback) {
   this.conf.dataSource.db.collection(this.conf.colName).findOne(qry, function (err, doc) {
     if (err) {
       callback(err, false);
     } else {
-      callback(null, null != doc);
+      callback(null, null !== doc);
     }
   });
 };
 
-Model.prototype.find = function (qry, callback, opts) {
-  var qry = this.conf.dataSource.db.collection(this.conf.colName).find(qry);
+Model.prototype.find = function (qryObj, callback, opts) {
+  var qry = this.conf.dataSource.db.collection(this.conf.colName).find(qryObj);
   if (opts && opts.limit) {
     qry = qry.limit(opts.limit);
   }

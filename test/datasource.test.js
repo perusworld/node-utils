@@ -47,7 +47,7 @@ describe('crud', () => {
       expect(resp._id).toBeDefined();
       expect(resp._id).not.toBeNull();
       done();
-    })
+    });
   });
 
   test('find', done => {
@@ -58,7 +58,7 @@ describe('crud', () => {
       expect(resp.length).toBeDefined();
       expect(0 < resp.length).toBe(true);
       done();
-    })
+    });
   });
 
   test('update', done => {
@@ -69,8 +69,8 @@ describe('crud', () => {
         expect(err).toBeNull();
         expect(uresp._id.toHexString()).toBe(resp[0]._id.toHexString());
         done();
-      })
-    })
+      });
+    });
   });
 
   test('delete many', done => {
@@ -80,8 +80,7 @@ describe('crud', () => {
       expect(deletedCount).not.toBeNull();
       expect(0 < deletedCount).toBe(true);
       done();
-    })
+    });
   });
 
 });
-
