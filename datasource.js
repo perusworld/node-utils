@@ -53,6 +53,10 @@ function Model(dataSource, collectionName) {
   };
 }
 
+Model.prototype.translateId = function (id) {
+  return new mongodb.ObjectID(id);
+};
+
 Model.prototype.has = function (qry, callback) {
   this.conf.dataSource.db.collection(this.conf.colName).findOne(qry, function (err, doc) {
     if (err) {
@@ -79,12 +83,24 @@ Model.prototype.find = function (qryObj, callback, opts) {
 
 Model.prototype.getById = function (id, callback) {
   this.conf.dataSource.db.collection(this.conf.colName).findOne({
-    _id: new mongodb.ObjectID(id)
+    _id: id
   }, function (err, doc) {
     if (err) {
       callback(err, false);
     } else {
       callback(null, doc);
+    }
+  });
+};
+
+Model.prototype.getByIdAndDelete = function (id, callback) {
+  this.conf.dataSource.db.collection(this.conf.colName).findOneAndDelete({
+    _id: id
+  }, function (err, res) {
+    if (err) {
+      callback(err, false);
+    } else {
+      callback(null, res.value);
     }
   });
 };
@@ -165,5 +181,66 @@ Model.prototype.insertMany = function (arr, callback) {
   });
 };
 
+function Nonce(opts, dataSource, callback) {
+  this.conf = merge({
+    colName: 'nonces',
+    expireAfterSeconds: 300,
+    oneTimeUse: false
+  }, opts);
+  this.nonceModel = new Model(dataSource, this.conf.colName);
+  this.ensureIdx(callback);
+}
+
+Nonce.prototype.ensureIdx = function (callback) {
+  var ptr = this;
+  ptr.nonceModel.conf.dataSource.db.collection(ptr.conf.colName).createIndex({
+    "createdAt": 1
+  }, {
+      expireAfterSeconds: ptr.conf.expireAfterSeconds
+    }, (err, resp) => {
+      if (err) {
+        error(err);
+        if (callback) {
+          callback(err, false);
+        }
+      } else {
+        if (callback) {
+          callback(null, ptr);
+        }
+      }
+    });
+};
+
+Nonce.prototype.getNonce = function (token, callback) {
+  if (this.conf.oneTimeUse) {
+    this.nonceModel.getByIdAndDelete(token, callback);
+  } else {
+    this.nonceModel.getById(token, callback);
+  }
+};
+
+Nonce.prototype.addNonceWith = function (nonce, key, callback) {
+  this.nonceModel.add({
+    _id: nonce,
+    key: key,
+    createdAt: new Date()
+  }, (err, ins) => {
+    if (err) {
+      callback(err, null);
+    } else if (ins) {
+      callback(null, nonce);
+    }
+  });
+};
+
+Nonce.prototype.addNonce = function (key, callback) {
+  this.addNonceWith(uuidV4(), key, callback);
+};
+
+Nonce.prototype.removeNonce = function (nonce, callback) {
+  this.nonceModel.delete({ _id: nonce }, callback);
+};
+
 module.exports.DataSource = DataSource;
 module.exports.Model = Model;
+module.exports.Nonce = Nonce;

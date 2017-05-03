@@ -82,5 +82,177 @@ describe('crud', () => {
       done();
     });
   });
+});
+
+describe('nonce one time use', () => {
+  var nonce = null;
+  var nKey = 'n-key';
+  var expireAfterSeconds = 5;
+  var originalTimeout;
+
+  beforeAll(done => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 70 * 1000;
+    nonce = new datasourceapi.Nonce({ oneTimeUse: true, expireAfterSeconds: expireAfterSeconds }, ctx.datasource, (err, resp) => {
+      expect(err).toBeNull();
+      expect(resp).toBeDefined();
+      expect(resp).not.toBeNull();
+      done();
+    });
+  });
+
+  afterAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  test('add', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      done();
+    });
+  });
+
+  test('add get', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      nonce.getNonce(nValue, (err, doc) => {
+        expect(err).toBeNull();
+        expect(doc).toBeDefined();
+        expect(doc).not.toBeNull();
+        expect(doc.key).toBe(nKey);
+        done();
+      })
+    });
+  });
+
+  test('add verify', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      nonce.getNonce(nValue, (err, doc) => {
+        expect(err).toBeNull();
+        expect(doc).toBeDefined();
+        expect(doc).not.toBeNull();
+        expect(doc.key).toBe(nKey);
+        nonce.getNonce(nValue, (err, doc) => {
+          expect(err).toBeNull();
+          expect(doc).toBeDefined();
+          expect(doc).toBeNull();
+          done();
+        })
+      })
+    });
+  });
+
+  test('add verify expiry', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      setTimeout(() => {
+        nonce.getNonce(nValue, (err, doc) => {
+          expect(err).toBeNull();
+          expect(doc).toBeDefined();
+          expect(doc).toBeNull();
+          done();
+        })
+      }, 61000);
+
+    });
+  });
+});
+
+describe('nonce multi time use', () => {
+  var nonce = null;
+  var nKey = 'n-key';
+  var expireAfterSeconds = 5;
+  var originalTimeout;
+
+  beforeAll(done => {
+    originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 70 * 1000;
+    nonce = new datasourceapi.Nonce({ oneTimeUse: false, expireAfterSeconds: expireAfterSeconds }, ctx.datasource, (err, resp) => {
+      expect(err).toBeNull();
+      expect(resp).toBeDefined();
+      expect(resp).not.toBeNull();
+      done();
+    });
+  });
+
+  afterAll(() => {
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
+  });
+
+  test('add', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      done();
+    });
+  });
+
+  test('add get', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      nonce.getNonce(nValue, (err, doc) => {
+        expect(err).toBeNull();
+        expect(doc).toBeDefined();
+        expect(doc).not.toBeNull();
+        expect(doc.key).toBe(nKey);
+        done();
+      })
+    });
+  });
+
+  test('add verify', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      nonce.getNonce(nValue, (err, doc) => {
+        expect(err).toBeNull();
+        expect(doc).toBeDefined();
+        expect(doc).not.toBeNull();
+        expect(doc.key).toBe(nKey);
+        nonce.getNonce(nValue, (err, doc) => {
+          expect(err).toBeNull();
+          expect(doc).toBeDefined();
+          expect(doc).not.toBeNull();
+          expect(doc.key).toBe(nKey);
+          done();
+        })
+      })
+    });
+  });
+
+  test('add verify expiry', done => {
+    nonce.addNonce(nKey, (err, nValue) => {
+      expect(err).toBeNull();
+      expect(nValue).toBeDefined();
+      expect(nValue).not.toBeNull();
+      nonce.getNonce(nValue, (err, doc) => {
+        expect(err).toBeNull();
+        expect(doc).toBeDefined();
+        expect(doc).not.toBeNull();
+        expect(doc.key).toBe(nKey);
+        setTimeout(() => {
+          nonce.getNonce(nValue, (err, doc) => {
+            expect(err).toBeNull();
+            expect(doc).toBeDefined();
+            expect(doc).toBeNull();
+            done();
+          })
+        }, 61000);
+      })
+    });
+  });
 
 });

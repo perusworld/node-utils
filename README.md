@@ -50,4 +50,20 @@ new datasourceapi.DataSource({ mongodbURI: 'mongodb://localhost:27017/my-db' }, 
 
 ```
 
+### nonce ##
+```javascript
+var datasourceapi = require('node-utils').datasource();
+new datasourceapi.DataSource({ mongodbURI: 'mongodb://localhost:27017/my-db' }, (err, datasource) => {
+    new datasourceapi.Nonce({ 
+      oneTimeUse: true, 
+      expireAfterSeconds: expireAfterSeconds 
+      }, datasource, (err, nonceModel) => {
+        nonceModel.addNonce('someKey', (err, nonce) => {
+          //use nonce
+        });
+    });
+
+});
+
+```
 

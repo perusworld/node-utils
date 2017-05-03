@@ -1,6 +1,6 @@
 {
   "name": "node-utils",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Simple Node.js Utils",
   "main": "node-utils.js",
   "scripts": {

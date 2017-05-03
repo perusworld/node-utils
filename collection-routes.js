@@ -8,7 +8,7 @@ module.exports = function (collectionModel, router) {
     });
   });
   router.get('/:id', function (req, res) {
-    collectionModel.getById(req.params.id, (err, result) => {
+    collectionModel.getById(collectionModel.translateId(req.params.id), (err, result) => {
       if (err || null === result) {
         booking = {};
       }
