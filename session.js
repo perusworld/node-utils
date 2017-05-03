@@ -21,14 +21,14 @@ Session.prototype.buildServerUrl = function (path) {
 };
 
 Session.prototype.get = function (key) {
-    if (null == this.conf.storage[key]) {
+    if (null === this.conf.storage[key]) {
         this.conf.storage[key] = {};
     }
     return this.conf.storage[key];
 };
 
 Session.prototype.rm = function (key) {
-    if (null == this.conf.storage[key]) {} else {
+    if (null === this.conf.storage[key]) {} else {
         this.conf.storage[key] = null;
     }
 };

@@ -20,7 +20,7 @@ describe('cache miss', () => {
 
   test('miss force', done => {
     const loader = jest.fn((callback) => {
-      callback(null, value)
+      callback(null, value);
     });
     session.load(key, prop, true, loader, (err, loadedValue) => {
       expect(err).toBeNull();
@@ -32,7 +32,7 @@ describe('cache miss', () => {
 
   test('hit now', done => {
     const loader = jest.fn((callback) => {
-      callback(null, value)
+      callback(null, value);
     });
     session.load(key, prop, false, loader, (err, loadedValue) => {
       expect(err).toBeNull();
@@ -49,7 +49,7 @@ describe('cache miss first time', () => {
 
   test('miss', done => {
     const loader = jest.fn((callback) => {
-      callback(null, value)
+      callback(null, value);
     });
     session.load(key, prop, false, loader, (err, loadedValue) => {
       expect(err).toBeNull();
@@ -73,7 +73,7 @@ describe('cache hit', () => {
 
   test('hit now', done => {
     const loader = jest.fn((callback) => {
-      callback(null, value)
+      callback(null, value);
     });
     session.load(key, prop, false, loader, (err, loadedValue) => {
       expect(err).toBeNull();

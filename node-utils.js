@@ -6,5 +6,11 @@ module.exports = {
     },
     dumper: function () {
         return require('./dumper');
+    },
+    datasource: function () {
+        return require('./datasource');
+    },
+    collectionroutes: function () {
+        return require('./collection-routes');
     }
 }

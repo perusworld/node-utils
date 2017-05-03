@@ -40,11 +40,11 @@ Dumper.prototype.dump = function (prefix, data, callback) {
       debug('Failed writing to ', err.filename);
       error(err.error);
       if (callback) {
-        callback(err, null)
+        callback(err, null);
       }
     } else {
       if (callback) {
-        callback(null, filename)
+        callback(null, filename);
       }
     }
   });

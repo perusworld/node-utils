@@ -1,6 +1,6 @@
 {
   "name": "node-utils",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Simple Node.js Utils",
   "main": "node-utils.js",
   "scripts": {
@@ -24,7 +24,9 @@
     "async": "^2.4.0",
     "debug": "^2.6.6",
     "merge": "^1.2.0",
-    "moment": "^2.18.1"
+    "moment": "^2.18.1",
+    "mongodb": "^2.2.26",
+    "uuid": "^3.0.1"
   },
   "devDependencies": {
     "jest": "^19.0.2"
