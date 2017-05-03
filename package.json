@@ -1,0 +1,32 @@
+{
+  "name": "node-utils",
+  "version": "0.1.0",
+  "description": "Simple Node.js Utils",
+  "main": "node-utils.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/perusworld/node-utils.git"
+  },
+  "keywords": [
+    "nodejs",
+    "utils"
+  ],
+  "author": "Saravana Perumal Shanmugam <saravanaperumal@msn.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/perusworld/node-utils/issues"
+  },
+  "homepage": "https://github.com/perusworld/node-utils",
+  "dependencies": {
+    "async": "^2.4.0",
+    "debug": "^2.6.6",
+    "merge": "^1.2.0",
+    "moment": "^2.18.1"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2"
+  }
+}
