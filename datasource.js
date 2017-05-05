@@ -13,9 +13,9 @@ function DataSource(opts, callback) {
   const mongodbURI = (process.env.MONGODB_URI) ?
     (process.env.MONGODB_URI) :
     opts.mongodbURI;
-  this.conf = merge({
+  this.conf = merge({}, opts, {
     mongodbURI: mongodbURI
-  }, opts);
+  });
   this.db = null;
   this.open(callback);
 }
