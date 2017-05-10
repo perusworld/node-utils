@@ -11,6 +11,14 @@ var obj = {
   }
 };
 
+var objB = {
+  _id: 'some-id',
+  akey: 'a-key-value',
+  bobj: {
+    ckey: 'c-key-value'
+  }
+};
+
 beforeAll(done => {
   new datasourceapi.DataSource({ mongodbURI: 'mongodb://localhost:27017/datasource-test' }, (err, datasource) => {
     expect(err).toBeNull();
@@ -18,19 +26,27 @@ beforeAll(done => {
     expect(datasource).not.toBeNull();
     ctx.datasource = datasource;
     ctx.aColModel = new datasourceapi.Model(datasource, 'some-collection');
+    ctx.bColModel = new datasourceapi.Model(datasource, 'some-other-collection');
     done();
   });
 });
 
-test('ensure datasource', () => {
+test('ensure datasource', done => {
   expect(ctx.datasource).toBeDefined();
   expect(ctx.datasource).not.toBeNull();
   expect(ctx.aColModel).toBeDefined();
   expect(ctx.aColModel).not.toBeNull();
+  expect(ctx.bColModel).toBeDefined();
+  expect(ctx.bColModel).not.toBeNull();
+  ctx.bColModel.deleteMany({}, (err, resp) => {
+    expect(err).toBeNull();
+    done();
+  });
 });
 
 afterAll(() => {
   ctx.aColModel = null;
+  ctx.bColModel = null;
   if (ctx.datasource) {
     ctx.datasource.close();
     ctx.datasource = null;
@@ -70,6 +86,21 @@ describe('crud', () => {
         expect(uresp._id.toHexString()).toBe(resp[0]._id.toHexString());
         done();
       });
+    });
+  });
+
+  test('insert through update fail', done => {
+    ctx.bColModel.update(objB, (err, uresp) => {
+      expect(err).toBe('could not find object to update');
+      done();
+    });
+  });
+
+  test('insert through upsert', done => {
+    ctx.bColModel.upsert(objB, (err, uresp) => {
+      expect(err).toBeNull();
+      expect(uresp._id).toBe(objB._id);
+      done();
     });
   });
 

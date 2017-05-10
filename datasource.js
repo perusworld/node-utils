@@ -139,14 +139,33 @@ Model.prototype.update = function (obj, callback) {
         if (err) {
           callback(err, null);
         } else {
-          callback(null, {
-            _id: resp.value._id
-          });
+          if (resp.value) {
+            callback(null, {
+              _id: resp.value._id
+            });
+          } else {
+            callback('could not find object to update', null);
+          }
         }
       });
   } else {
     this.add(obj, callback);
   }
+};
+
+Model.prototype.upsert = function (obj, callback) {
+  this.conf.dataSource.db.collection(this.conf.colName).findOneAndReplace({
+    _id: obj._id
+  }, obj, {
+      upsert: true,
+      returnOriginal: false
+    }, function (err, resp) {
+      if (err) {
+        callback(err, null);
+      } else {
+        callback(null, resp.value);
+      }
+    });
 };
 
 Model.prototype.delete = function (obj, callback) {
